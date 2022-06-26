@@ -1,31 +1,47 @@
 package battleship.vessels;
 
-import battleship.Field;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static battleship.Field.LOWER_BOUNDARY;
-import static battleship.Field.UPPER_BOUNDARY;
-
 public abstract class Ship {
-    private int size;
-    private String[] rear;
-    private String[] fore;
-    private boolean afloat;
-    private Map<Character, Integer> enclosedFields;
 
-    public Ship(String[] rear, String[] fore) {
-        this.rear = rear;
-        this.fore = fore;
+    private String name;
+    private int productionSize;
+    private VesselType type;
+    private int size;
+    private int rearLetter;
+    private int rearNumber;
+    private int foreLetter;
+    private int foreNumber;
+    private boolean afloat;
+
+    private Map<Integer, CoordinateUnit> coordinates = new HashMap<>();
+    private Map<Integer, EnclosedField> enclosedFields = new HashMap<>();
+
+    public Ship() {
+    }
+
+    public Ship(int rearLetter, int rearNumber, int foreLetter, int foreNumber) {
+
+        int shipSize;
+        if (foreNumber - rearNumber != 0) {
+            shipSize = (foreNumber + 1) - rearNumber;
+        } else {
+            shipSize = (foreLetter + 1) - rearLetter;
+        }
+        this.size = shipSize;
+        this.rearLetter = rearLetter;
+        this.rearNumber = rearNumber;
+        this.foreLetter = foreLetter;
+        this.foreNumber = foreNumber;
         this.afloat = true;
     }
 
-    public Map<Character, Integer> getEnclosedFields() {
+    public Map<Integer, EnclosedField> getEnclosedFields() {
         return enclosedFields;
     }
 
-    public void setEnclosedFields(Map<Character, Integer> enclosedFields) {
+    public void setEnclosedFields(Map<Integer, EnclosedField> enclosedFields) {
         this.enclosedFields = enclosedFields;
     }
 
@@ -37,22 +53,6 @@ public abstract class Ship {
         this.size = size;
     }
 
-    public String[] getRear() {
-        return rear;
-    }
-
-    public void setRear(String letter, String number) {
-        this.rear = new String[]{letter, number};
-    }
-
-    public String[] getFore() {
-        return fore;
-    }
-
-    public void setFore(String letter, String number) {
-        this.fore = new String[]{letter, number};
-    }
-
     public boolean isAfloat() {
         return afloat;
     }
@@ -61,4 +61,59 @@ public abstract class Ship {
         this.afloat = afloat;
     }
 
+    public int getRearLetter() {
+        return rearLetter;
+    }
+
+    public void setRearLetter(int rearLetter) {
+        this.rearLetter = rearLetter;
+    }
+
+    public int getRearNumber() {
+        return rearNumber;
+    }
+
+    public void setRearNumber(int rearNumber) {
+        this.rearNumber = rearNumber;
+    }
+
+    public int getForeLetter() {
+        return foreLetter;
+    }
+
+    public void setForeLetter(int foreLetter) {
+        this.foreLetter = foreLetter;
+    }
+
+    public int getForeNumber() {
+        return foreNumber;
+    }
+
+    public void setForeNumber(int foreNumber) {
+        this.foreNumber = foreNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getProductionSize() {
+        return productionSize;
+    }
+
+    public VesselType getType() {
+        return type;
+    }
+
+    public Map<Integer, CoordinateUnit> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Map<Integer, CoordinateUnit> coordinates) {
+        this.coordinates = coordinates;
+    }
 }

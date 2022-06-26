@@ -2,19 +2,28 @@ package battleship.vessels;
 
 public class AircraftCarrier extends Ship {
 
-    private int size = 5;
+    private final String name = "Aircraft Carrier";
+    private final int productionSize = 5;
+    private VesselType type = VesselType.AIRCRAFT_CARRIER;
 
-    public AircraftCarrier(String[] rear, String[] fore) {
-        super(rear, fore);
+    public AircraftCarrier() {
+        super();
+    }
+
+    public AircraftCarrier(int rearLetter, int rearNumber, int foreLetter, int foreNumber) {
+        super(rearLetter, rearNumber, foreLetter, foreNumber);
+    }
+
+    public int getProductionSize() {
+        return productionSize;
     }
 
     @Override
-    public int getSize() {
-        return size;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void setSize(int size) {
-        this.size = size;
+    public VesselType getType() {
+        return type;
     }
 }

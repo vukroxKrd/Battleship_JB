@@ -1,34 +1,65 @@
 package battleship;
 
-import battleship.vessels.AircraftCarrier;
+import battleship.exceptions.IncorrectShipSizeException;
+import battleship.exceptions.ShipCoordinatesOutTheBoardException;
+import battleship.exceptions.WrongShipLocationException;
+import battleship.vessels.CoordinateUnit;
+import battleship.vessels.EnclosedField;
 import battleship.vessels.Ship;
+import battleship.vessels.ShipFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
         Field field = Field.getInstance();
-        field.printBattleField();
 
-        String[] rear = {"I", "2"};
-        String[] fore = {"I", "5"};
-        Ship aircraftCarrier = new AircraftCarrier(rear, fore);
+        ShipFactory factory = new ShipFactory();
+        Fleet fleet = new Fleet();
 
-        String[] rear1 = {"A", "6"};
-        String[] fore1 = {"D", "6"};
-        Ship aircraftCarrier1 = new AircraftCarrier(rear1, fore1);
+        for (Ship draft : fleet.draftFleet) {
+            Ship placedShip = null;
+            boolean repeat = false;
+            do {
+                repeat = false;
 
-        String[] rear2 = {"A", "10"};
-        String[] fore2 = {"C", "10"};
-        Ship borderShip1 = new AircraftCarrier(rear2, fore2);
+                try {
+                    List<Integer> coordinates = factory.requestCoordinates(draft);
+                    Ship ship = factory.createShip(draft.getType(), coordinates);
+                    placedShip = field.placeShipOnMap(ship);
+                } catch (ShipCoordinatesOutTheBoardException | IncorrectShipSizeException | WrongShipLocationException e) {
+                    repeat = true;
+                    e.printStackTrace();
+                }
 
-        String[] rear3 = {"H", "10"};
-        String[] fore3 = {"J", "10"};
-        Ship borderShip2 = new AircraftCarrier(rear3, fore3);
+            } while (repeat);
 
-        field.placeShipOnMap(aircraftCarrier);
-        field.placeShipOnMap(aircraftCarrier1);
-        field.placeShipOnMap(borderShip1);
-        field.placeShipOnMap(borderShip2);
+//            if (!fleet.fleet.isEmpty()) {
+//                fleet.fleet.stream()
+//                        .flatMap(aShip -> aShip.getEnclosedFields()
+//                                .containsValue())
+//            }
+            fleet.fleet.add(placedShip);
+
+            Map<Integer, CoordinateUnit> coordsPlaced = placedShip.getCoordinates();
+            Map<Integer, EnclosedField> enclosedFields = placedShip.getEnclosedFields();
+
+            System.out.println("\n Printing coordinates: ");
+            coordsPlaced.entrySet().forEach(entry -> {
+                System.out.println(entry.getKey() + " " + entry.getValue());
+            });
+
+            System.out.println("\n Printing enclosed fields: ");
+            System.out.println(enclosedFields.size());
+            enclosedFields.entrySet().forEach(entry -> {
+                System.out.println(entry.getKey() + " " + entry.getValue());
+            });
+
+            field.printBattleField();
+        }
+        System.out.println("Final disposition is: ");
         field.printBattleField();
     }
 }

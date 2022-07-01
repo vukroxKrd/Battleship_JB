@@ -1,6 +1,8 @@
 package battleship.vessels;
 
-public class CoordinateUnit {
+import java.util.Objects;
+
+public class CoordinateUnit extends Coordinate{
 
     private char letter;
     private int number;

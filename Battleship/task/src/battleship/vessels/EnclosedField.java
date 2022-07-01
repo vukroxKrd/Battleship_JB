@@ -1,6 +1,7 @@
 package battleship.vessels;
 
-public class EnclosedField {
+public class EnclosedField extends Coordinate {
+
     private char letter;
     private int number;
 

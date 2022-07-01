@@ -41,19 +41,40 @@ public class ShipFactory {
         return ship;
     }
 
-    public List<Integer> requestCoordinates(Ship ship) {
-        System.out.printf("Enter the coordinates of the %s (%d cells) \n", ship.getName(), ship.getProductionSize());
-        System.out.print("> ");
+    public List<Integer> requestCoordinates(Ship ship, boolean repeat) {
+        if (repeat) {
+            System.out.print("> ");
+        } else {
+            System.out.printf("Enter the coordinates of the %s (%d cells) \n", ship.getName(), ship.getProductionSize());
+            System.out.print("\n> ");
+        }
+
         String userInput = scanner.nextLine();
 
         List<Integer> numbers = findNumbers(userInput);
         List<Character> letters = findLetters(userInput);
         List<Integer> result = new ArrayList<>();
+        int rearLetter = letterNumberMap.get(letters.get(0));
+        int rearNumber = numbers.get(0);
+        int foreLetter = letterNumberMap.get(letters.get(1));
+        int foreNumber = numbers.get(1);
 
-        result.add(letterNumberMap.get(letters.get(0)));
-        result.add(numbers.get(0));
-        result.add(letterNumberMap.get(letters.get(1)));
-        result.add(numbers.get(1));
+        //handling 2 edge cases here when user breaks the pattern of the input of game fields
+        if (rearLetter == foreLetter && rearNumber > foreNumber) {
+            int temp = rearNumber;
+            rearNumber = foreNumber;
+            foreNumber = temp;
+        }
+        if (rearNumber == foreNumber && rearLetter > foreLetter) {
+            int temp = rearLetter;
+            rearLetter = foreLetter;
+            foreLetter = temp;
+        }
+
+        result.add(rearLetter);
+        result.add(rearNumber);
+        result.add(foreLetter);
+        result.add(foreNumber);
         return result;
     }
 

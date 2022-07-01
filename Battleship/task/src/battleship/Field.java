@@ -3,15 +3,12 @@ package battleship;
 import battleship.exceptions.IncorrectShipSizeException;
 import battleship.exceptions.ShipCoordinatesOutTheBoardException;
 import battleship.exceptions.WrongShipLocationException;
-import battleship.utils.NavigationUtils;
 import battleship.vessels.CoordinateUnit;
 import battleship.vessels.EnclosedField;
 import battleship.vessels.Ship;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static battleship.utils.NavigationUtils.letterNumberMap;
 import static battleship.utils.NavigationUtils.numberLetterMap;
 
 public class Field {

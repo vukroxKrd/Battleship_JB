@@ -5,11 +5,11 @@ import battleship.exceptions.ShipCoordinatesOutTheBoardException;
 import battleship.exceptions.ShipPlacedTooCloseToOtherShipException;
 import battleship.exceptions.WrongShipLocationException;
 import battleship.utils.NavigationUtils;
-import battleship.vessels.*;
+import battleship.vessels.Coordinate;
+import battleship.vessels.Ship;
+import battleship.vessels.ShipFactory;
 
-import java.lang.reflect.Array;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
 

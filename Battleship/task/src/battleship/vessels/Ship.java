@@ -2,6 +2,7 @@ package battleship.vessels;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class Ship {
 
@@ -35,6 +36,31 @@ public abstract class Ship {
         this.foreLetter = foreLetter;
         this.foreNumber = foreNumber;
         this.afloat = true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ship)) return false;
+        Ship ship = (Ship) o;
+        return getProductionSize() == ship.getProductionSize()
+                && getRearLetter() == ship.getRearLetter()
+                && getRearNumber() == ship.getRearNumber()
+                && getForeLetter() == ship.getForeLetter()
+                && getForeNumber() == ship.getForeNumber()
+                && getName().equals(ship.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getProductionSize(), getRearLetter(), getRearNumber(), getForeLetter(), getForeNumber());
+    }
+
+    public void changeHitToTrueWhenTheShipWasShot(CoordinateUnit coordinate) {
+
+        this.getCoordinates().values().stream()
+                .filter(coordinate::equals)
+                .forEach(coordinateUnit -> coordinateUnit.setHit(true));
     }
 
     public Map<Integer, EnclosedField> getEnclosedFields() {

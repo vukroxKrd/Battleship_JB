@@ -1,47 +1,52 @@
-package battleship.vessels;
+package battleship.player;
 
-public class CoordinateUnit extends Coordinate {
+import battleship.vessels.Coordinate;
+
+public class Shot extends Coordinate {
 
     private char letter;
     private int number;
-    private boolean hit;
+    private boolean strike;
 
-    public CoordinateUnit(char letter, int number) {
+    public Shot(char letter, int number) {
         this.letter=letter;
         this.number=number;
-        this.hit = false;
     }
 
     @Override
     public String toString() {
-        return "CoordinateUnit{" +
+        return "Shot{" +
                 "letter=" + letter +
                 ", number=" + number +
-                ", hit=" + hit +
+                ", strike=" + strike +
                 '}';
     }
 
+    @Override
     public char getLetter() {
         return letter;
     }
 
+    @Override
     public void setLetter(char letter) {
         this.letter = letter;
     }
 
+    @Override
     public int getNumber() {
         return number;
     }
 
+    @Override
     public void setNumber(int number) {
         this.number = number;
     }
 
-    public boolean isHit() {
-        return hit;
+    public boolean isStroke() {
+        return strike;
     }
 
-    public void setHit(boolean hit) {
-        this.hit = hit;
+    public void setStrike(boolean strike) {
+        this.strike = strike;
     }
 }

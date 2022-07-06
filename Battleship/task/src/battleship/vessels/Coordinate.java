@@ -7,6 +7,14 @@ public abstract class Coordinate implements Comparable<Coordinate> {
     private char letter;
     private int number;
 
+    public Coordinate() {
+    }
+
+    public Coordinate(char letter, int number) {
+        this.letter = letter;
+        this.number = number;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -27,6 +35,14 @@ public abstract class Coordinate implements Comparable<Coordinate> {
         if (result != 0) return result;
         result = Integer.compare(this.getNumber(), o.getNumber());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "letter=" + letter +
+                ", number=" + number +
+                '}';
     }
 
     public char getLetter() {

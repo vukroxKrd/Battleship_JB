@@ -3,10 +3,9 @@ package battleship;
 import battleship.exceptions.IncorrectShipSizeException;
 import battleship.exceptions.ShipCoordinatesOutTheBoardException;
 import battleship.exceptions.WrongShipLocationException;
-import battleship.vessels.CoordinateUnit;
-import battleship.vessels.EnclosedField;
-import battleship.vessels.Ship;
+import battleship.vessels.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static battleship.utils.NavigationUtils.numberLetterMap;
@@ -15,6 +14,7 @@ public class Field {
 
     private String[][] battleField;
     private static Field instance;
+    public static List<Ship> draftFleet = List.of(new AircraftCarrier(), new Battleship(), new Submarine(), new Cruiser(), new Destroyer());
     public static final int LOWER_BOUNDARY = 1;
     public static final int UPPER_BOUNDARY = 11;
 
@@ -103,7 +103,7 @@ public class Field {
                     }
 
                     if (ship.getSize() == 0) {
-                        ship.setAfloat(false);
+//                        ship.setAfloat(false);
                         continueProcessing = false;
                     }
                     // the ship is not touching borders
@@ -200,7 +200,7 @@ public class Field {
                         continue;
                     }
                     if (ship.getSize() == 0) {
-                        ship.setAfloat(false);
+//                        ship.setAfloat(false);
                         continueProcessing = false;
                     }
                     if (i >= 1 && j > 1 && j < field.length) {

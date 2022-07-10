@@ -1,10 +1,13 @@
 package battleship.player;
 
+import battleship.Field;
 import battleship.utils.CoordinatesRequestor;
 import battleship.vessels.Coordinate;
+import battleship.vessels.CoordinateUnit;
 import battleship.vessels.Ship;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player {
 
@@ -94,6 +97,15 @@ public class Player {
                                     coordinateUnit.equals(coordinate)))
                     .findAny();
             return ship1;
+        }
+
+        private List<CoordinateUnit> fieldsWhichWereHit() {
+
+            return ships.stream()
+                    .flatMap(ship -> ship.getCoordinates().values()
+                            .stream())
+                    .filter(CoordinateUnit::isHit)
+                    .collect(Collectors.toList());
         }
     }
 }

@@ -13,8 +13,10 @@ import battleship.vessels.CoordinateUnit;
 import battleship.vessels.Ship;
 import battleship.vessels.ShipFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Game {
 
@@ -97,7 +99,8 @@ public class Game {
 
     public void takeActionOnOpponent(Player player, Player opponent, Field field) {
 
-        field.printBattleField();
+        String[][] fieldWithTheFogOfWar = field.prepareBattleFieldWithTheFogOfWar(player);
+        field.printBattleField(fieldWithTheFogOfWar);
 
         Shot shot = player.produceShot();
         Map<Integer, Shot> allShots = player.getShots();
@@ -131,15 +134,18 @@ public class Game {
                     bField[NavigationUtils.letterNumberMap.get(coordinate.getLetter())][coordinate.getNumber()] = String.valueOf('X');
 
                     field.setBattleField(bField);
-                    field.printBattleField();
+
+                    field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
                     System.out.println("You hit a ship!");
+                    field.printBattleField();
                 },
                 () -> {
-                    System.out.println(shot);
                     bField[NavigationUtils.letterNumberMap.get(shot.getLetter())][shot.getNumber()] = String.valueOf('M');
                     field.setBattleField(bField);
-                    field.printBattleField();
+
+                    field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
                     System.out.println("You missed!");
+                    field.printBattleField();
                 }
         );
     }

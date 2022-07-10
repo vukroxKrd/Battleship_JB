@@ -63,9 +63,10 @@ public class CoordinatesRequestor {
             List<Integer> numbers = findNumbers(result);
 
             if ((letters.get(0) > 'J' && letters.get(0) < 'a') || (numbers.get(0) > 10 || numbers.get(0) < 1)) {
-                throw new ShotOutTheBoardException("Shot must be made within play-board limits! Your shot was: " + result);
+                throw new ShotOutTheBoardException("\nError! You entered wrong coordinates! Try again:");
             }
         } catch (ShotOutTheBoardException e) {
+            System.out.println(e.getMessage());
             result = requestUserInput();
         }
         return result;

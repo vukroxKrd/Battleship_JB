@@ -3,10 +3,14 @@ package battleship;
 import battleship.exceptions.IncorrectShipSizeException;
 import battleship.exceptions.ShipCoordinatesOutTheBoardException;
 import battleship.exceptions.WrongShipLocationException;
+import battleship.player.Player;
+import battleship.player.Shot;
+import battleship.utils.NavigationUtils;
 import battleship.vessels.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static battleship.utils.NavigationUtils.numberLetterMap;
 
@@ -60,7 +64,67 @@ public class Field {
         }
     }
 
+    protected String[][] prepareBattleFieldWithTheFogOfWar(Player player) {
+        String [][] battleField = new String[11][11];
+        battleField[0][0] = " ";
+        battleField[0][1] = "1";
+        battleField[0][2] = "2";
+        battleField[0][3] = "3";
+        battleField[0][4] = "4";
+        battleField[0][5] = "5";
+        battleField[0][6] = "6";
+        battleField[0][7] = "7";
+        battleField[0][8] = "8";
+        battleField[0][9] = "9";
+        battleField[0][10] = "10";
+        battleField[1][0] = "A";
+        battleField[2][0] = "B";
+        battleField[3][0] = "C";
+        battleField[4][0] = "D";
+        battleField[5][0] = "E";
+        battleField[6][0] = "F";
+        battleField[7][0] = "G";
+        battleField[8][0] = "H";
+        battleField[9][0] = "I";
+        battleField[10][0] = "J";
+
+
+        for (int i = 1; i < battleField.length; i++) {
+            for (int j = 1; j < battleField[i].length; j++) {
+                battleField[i][j] = String.valueOf('~');
+
+            }
+        }
+        List<Shot> hits = player.getShots().values().stream().filter(Shot::isStroke).collect(Collectors.toList());
+        List<Shot> misses = player.getShots().values().stream().filter(shot -> !shot.isStroke()).collect(Collectors.toList());
+
+        hits.forEach(shot -> {
+            Integer letter = NavigationUtils.letterNumberMap.get(shot.getLetter());
+            int number = shot.getNumber();
+            battleField[letter][number] = String.valueOf('X');
+        });
+
+        misses.forEach(shot -> {
+            Integer letter = NavigationUtils.letterNumberMap.get(shot.getLetter());
+            int number = shot.getNumber();
+            battleField[letter][number] = String.valueOf('M');
+        });
+
+        return battleField;
+    }
+
     public void printBattleField() {
+        System.out.println();
+        for (String[] strings : battleField) {
+            for (int j = 0; j < strings.length; j++) {
+                System.out.print(strings[j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public void printBattleField(String[][] battleField) {
         System.out.println();
         for (String[] strings : battleField) {
             for (int j = 0; j < strings.length; j++) {

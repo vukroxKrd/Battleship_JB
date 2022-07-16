@@ -63,6 +63,14 @@ public abstract class Ship {
                 .forEach(coordinateUnit -> coordinateUnit.setHit(true));
     }
 
+    public boolean checkShipIsStillAfloat() {
+        boolean shipIsSunk = this.getCoordinates().values().stream().allMatch(CoordinateUnit::isHit);
+        if (shipIsSunk) {
+            afloat = false;
+        }
+        return afloat;
+    }
+
     public Map<Integer, EnclosedField> getEnclosedFields() {
         return enclosedFields;
     }

@@ -85,7 +85,7 @@ public class CoordinatesRequestor {
     }
 
     //
-    private static List<Integer> findNumbers(String stringToSearch) {
+    public static List<Integer> findNumbers(String stringToSearch) {
         Pattern integerPattern = Pattern.compile("\\d+");
         Matcher matcher = integerPattern.matcher(stringToSearch);
 

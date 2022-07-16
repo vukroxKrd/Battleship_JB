@@ -2,12 +2,14 @@ package battleship.player;
 
 import battleship.Field;
 import battleship.utils.CoordinatesRequestor;
+import battleship.utils.NavigationUtils;
 import battleship.vessels.Coordinate;
 import battleship.vessels.CoordinateUnit;
 import battleship.vessels.Ship;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Player {
 
@@ -24,8 +26,6 @@ public class Player {
     }
 
     public Shot produceShot() {
-        System.out.println("Take a shot!");
-
         String coordinates = CoordinatesRequestor.requestUserInput();
 
         OptionalInt letter = coordinates.codePoints()
@@ -34,10 +34,8 @@ public class Player {
         char l = (char) letter.getAsInt();
         l = Character.toUpperCase(l);
 
-        OptionalInt number = coordinates.codePoints()
-                .filter(Character::isDigit)
-                .findFirst();
-        int i = Character.getNumericValue(number.getAsInt());
+        List<Integer> number = CoordinatesRequestor.findNumbers(coordinates);
+        int i = number.get(0);
 
         Shot shot = new Shot(l, i);
 
@@ -79,6 +77,9 @@ public class Player {
     }
 
     public class Fleet {
+
+        private boolean shipsLeft = true;
+
         private List<Ship> ships = new ArrayList<>();
 
         public List<Ship> getShips() {
@@ -87,6 +88,20 @@ public class Player {
 
         public void setShips(List<Ship> ships) {
             this.ships = ships;
+        }
+
+        public boolean isShipsLeft() {
+            return shipsLeft;
+        }
+
+        public void setShipsLeft(boolean shipsLeft) {
+            this.shipsLeft = shipsLeft;
+        }
+
+        public boolean areAnyShipsLeft() {
+            boolean result = this.ships.stream().anyMatch(Ship::isAfloat);
+            setShipsLeft(result);
+            return result;
         }
 
         public Optional<Ship> findShipByCoordinate(Coordinate coordinate) {

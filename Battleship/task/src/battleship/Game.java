@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Game {
 
@@ -35,8 +36,10 @@ public class Game {
         var opponent = player;
 
         System.out.println("The game starts!");
-        takeActionOnOpponent(player, opponent, field);
-
+        do {
+            takeActionOnOpponent(player, opponent, field);
+        } while (continuePlaying(player, opponent));
+        System.out.println("You sank the last ship. You won. Congratulations!");
     }
 
     public Player placeAllShipsOnTheMap(Player player, Field field) {
@@ -97,10 +100,26 @@ public class Game {
         return player;
     }
 
+    public boolean continuePlaying(Player player, Player opponent) {
+        boolean someShipAfloat = true;
+
+        boolean aPlayerShipAfloat = player.getPlayerFleet().getShips().stream().anyMatch(Ship::isAfloat);
+        boolean anOpponentShipAfloat = opponent.getPlayerFleet().getShips().stream().anyMatch(Ship::isAfloat);
+
+        if (!aPlayerShipAfloat || !anOpponentShipAfloat) {
+            someShipAfloat = false;
+        }
+
+        return someShipAfloat;
+    }
+
     public void takeActionOnOpponent(Player player, Player opponent, Field field) {
 
         String[][] fieldWithTheFogOfWar = field.prepareBattleFieldWithTheFogOfWar(player);
-        field.printBattleField(fieldWithTheFogOfWar);
+        if (player.getShots().isEmpty()) {
+            field.printBattleField(fieldWithTheFogOfWar);
+            System.out.println("Take a shot!");
+        }
 
         Shot shot = player.produceShot();
         Map<Integer, Shot> allShots = player.getShots();
@@ -124,10 +143,8 @@ public class Game {
         anyCoordinate.ifPresentOrElse(
                 (coordinate) -> {
                     coordinate.setHit(true);
-                    fleetOfOpponent.findShipByCoordinate(coordinate).ifPresent(ship -> ship.changeHitToTrueWhenTheShipWasShot(coordinate));
-                    opponent.setPlayerFleet(fleetOfOpponent);
-
                     shot.setStrike(true);
+
                     allShots.values().stream().filter(shot::equals).forEach(shot1 -> shot1.setStrike(true));
                     player.setShots(allShots);
 
@@ -136,16 +153,31 @@ public class Game {
                     field.setBattleField(bField);
 
                     field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
-                    System.out.println("You hit a ship!");
-                    field.printBattleField();
+
+                    AtomicBoolean afloat = new AtomicBoolean(true);
+                    fleetOfOpponent
+                            .findShipByCoordinate(coordinate)
+                            .ifPresent(ship -> {
+                                ship.changeHitToTrueWhenTheShipWasShot(coordinate);
+                                if (ship.isAfloat()) {
+                                    afloat.set(ship.checkShipIsStillAfloat());
+                                }
+                            });
+                    opponent.setPlayerFleet(fleetOfOpponent);
+
+                    if (!afloat.get() && fleetOfOpponent.areAnyShipsLeft()) {
+                        System.out.println("You sank a ship! Specify a new target:");
+                    } else if (afloat.get() && fleetOfOpponent.areAnyShipsLeft()) {
+                        System.out.println("You hit a ship! Try again:");
+                    }
+
                 },
                 () -> {
                     bField[NavigationUtils.letterNumberMap.get(shot.getLetter())][shot.getNumber()] = String.valueOf('M');
                     field.setBattleField(bField);
 
                     field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
-                    System.out.println("You missed!");
-                    field.printBattleField();
+                    System.out.println("You missed. Try again:");
                 }
         );
     }

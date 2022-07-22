@@ -1,5 +1,6 @@
 package battleship.player;
 
+import battleship.Field;
 import battleship.utils.CoordinatesRequestor;
 import battleship.vessels.Coordinate;
 import battleship.vessels.CoordinateUnit;
@@ -12,8 +13,9 @@ public class Player {
 
     static int instanceCounter = 0;
 
+    private Field field;
     private String name;
-    private int playerNumber;
+    private final int playerNumber;
     private Map<Integer, Shot> shots;
     private Map<String, Integer> record;
     private Fleet playerFleet;
@@ -25,10 +27,13 @@ public class Player {
         this.shots = new HashMap<>();
         this.record = new HashMap<>();
         this.playerFleet = new Fleet();
+        this.field = new Field();
         this.playerNumber = instanceCounter;
+
     }
 
     public Shot produceShot() {
+        System.out.println("\nPlayer " + this.getPlayerNumber() + ", it's your turn:");
         String coordinates = CoordinatesRequestor.requestUserInput();
 
         OptionalInt letter = coordinates.codePoints()
@@ -81,6 +86,14 @@ public class Player {
 
     public int getPlayerNumber() {
         return playerNumber;
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
     }
 
     public class Fleet {

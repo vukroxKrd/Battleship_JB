@@ -21,12 +21,13 @@ public class CoordinatesRequestor {
         if (repeat) {
             System.out.print("> ");
         } else {
-            System.out.printf("Enter the coordinates of the %s (%d cells) \n", ship.getName(), ship.getProductionSize());
+            System.out.printf("\nEnter the coordinates of the %s (%d cells) \n", ship.getName(), ship.getProductionSize());
             System.out.print("\n> ");
         }
 
         String userInput = scanner.nextLine();
 
+        System.out.print("\n");
         List<Integer> numbers = findNumbers(userInput);
         List<Character> letters = findLetters(userInput);
         List<Integer> result = new ArrayList<>();
@@ -58,6 +59,7 @@ public class CoordinatesRequestor {
         System.out.print("\n>");
         String result = null;
         result = scanner.nextLine();
+        System.out.print("\n");
 
         try {
             List<Character> letters = findLetters(result);
@@ -97,7 +99,7 @@ public class CoordinatesRequestor {
     }
 
     public static void passMove() {
-        System.out.println("Press Enter and pass the move to another player\n...");
+        System.out.println("\nPress Enter and pass the move to another player\n...");
         while (true) {
             try {
                 if ('\n' == (char) System.in.read()) break;

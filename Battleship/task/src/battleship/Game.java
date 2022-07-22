@@ -25,28 +25,26 @@ public class Game {
 
     private Player playerOne;
     private Player playerTwo;
-    private Field field;
 
-    public Game(Player playerOne, Player playerTwo, Field field) {
+    public Game(Player playerOne, Player playerTwo) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
-        this.field = field;
     }
 
-    public void play(Field field, Player playerOne, Player playerTwo) {
-        var player = placeAllShipsOnTheMap(playerOne, field);
-        var opponent = placeAllShipsOnTheMap(playerTwo, field);
-
-        System.out.println("The game starts!");
+    public void play(Player playerOne, Player playerTwo) {
+        var player = placeAllShipsOnTheMap(playerOne, playerOne.getField());
+        var opponent = placeAllShipsOnTheMap(playerTwo, playerTwo.getField());
+//        System.out.println("The game starts!");
         do {
-            takeActionOnOpponent(player, opponent, field);
+            takeActionOnOpponent(player, opponent);
+            takeActionOnOpponent(opponent, player);
         } while (continuePlaying(player, opponent));
         System.out.println("You sank the last ship. You won. Congratulations!");
     }
 
     public Player placeAllShipsOnTheMap(Player player, Field field) {
 
-        System.out.println("Player " + player.getPlayerNumber() + ", place your ships on the game field");
+        System.out.println("Player " + player.getPlayerNumber() + ", place your ships on the game field" + System.lineSeparator());
 
         var fleet = player.getPlayerFleet();
 
@@ -61,7 +59,7 @@ public class Game {
                     List<Integer> coordinates = CoordinatesRequestor.requestCoordinates(draft, repeat);
                     repeat = false;
                     Ship ship = ShipFactory.createShip(draft.getType(), coordinates);
-                    placedShip = field.placeShipOnMap(ship);
+                    placedShip = field.placeShipOnMap(ship, field);
                 } catch (ShipCoordinatesOutTheBoardException | IncorrectShipSizeException | WrongShipLocationException e) {
                     repeat = true;
                     System.out.println(e.getMessage());
@@ -119,20 +117,19 @@ public class Game {
         return someShipAfloat;
     }
 
-    public void takeActionOnOpponent(Player player, Player opponent, Field field) {
+    public void takeActionOnOpponent(Player player, Player opponent) {
 
-        String[][] fieldWithTheFogOfWar = field.prepareBattleFieldWithTheFogOfWar(player);
-        if (player.getShots().isEmpty()) {
-            field.printBattleField(fieldWithTheFogOfWar);
-            System.out.println("Take a shot!");
-        }
+        opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
+        player.getField().printBattleField();
+//            System.out.println("\nTake a shot!");
+
 
         Shot shot = player.produceShot();
         Map<Integer, Shot> allShots = player.getShots();
 
         Player.Fleet fleetOfOpponent = opponent.getPlayerFleet();
         List<Ship> shipsOfOpponent = fleetOfOpponent.getShips();
-        String[][] bField = field.getBattleField();
+        String[][] bField = opponent.getField().getBattleField();
 
         Optional<CoordinateUnit> anyCoordinate = shipsOfOpponent.stream()
                 .map(Ship::getCoordinates)
@@ -156,9 +153,10 @@ public class Game {
 
                     bField[NavigationUtils.letterNumberMap.get(coordinate.getLetter())][coordinate.getNumber()] = String.valueOf('X');
 
-                    field.setBattleField(bField);
+                    opponent.getField().setBattleField(bField);
 
-                    field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
+//                    opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
+//                    player.getField().printBattleField();
 
                     AtomicBoolean afloat = new AtomicBoolean(true);
                     fleetOfOpponent
@@ -173,17 +171,20 @@ public class Game {
 
                     if (!afloat.get() && fleetOfOpponent.areAnyShipsLeft()) {
                         System.out.println("You sank a ship! Specify a new target:");
+                        passMove();
                     } else if (afloat.get() && fleetOfOpponent.areAnyShipsLeft()) {
-                        System.out.println("You hit a ship! Try again:");
+                        System.out.print("You hit a ship!");
+                        passMove();
                     }
-
                 },
                 () -> {
                     bField[NavigationUtils.letterNumberMap.get(shot.getLetter())][shot.getNumber()] = String.valueOf('M');
-                    field.setBattleField(bField);
+                    opponent.getField().setBattleField(bField);
 
-                    field.printBattleField(field.prepareBattleFieldWithTheFogOfWar(player));
-                    System.out.println("You missed. Try again:");
+//                    opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
+//                    player.getField().printBattleField();
+                    System.out.print("You missed!");
+                    passMove();
                 }
         );
     }
@@ -202,13 +203,5 @@ public class Game {
 
     public void setPlayerTwo(Player playerTwo) {
         this.playerTwo = playerTwo;
-    }
-
-    public Field getField() {
-        return field;
-    }
-
-    public void setField(Field field) {
-        this.field = field;
     }
 }

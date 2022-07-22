@@ -17,20 +17,12 @@ import static battleship.utils.NavigationUtils.numberLetterMap;
 public class Field {
 
     private String[][] battleField;
-    private static Field instance;
     public static List<Ship> draftFleet = List.of(new AircraftCarrier(), new Battleship(), new Submarine(), new Cruiser(), new Destroyer());
     public static final int LOWER_BOUNDARY = 1;
     public static final int UPPER_BOUNDARY = 11;
 
-    private Field() {
-    }
-
-    public static Field getInstance() {
-        if (instance == null) {
-            instance = new Field();
-            instance.prepareBattleField();
-        }
-        return instance;
+    public Field() {
+        prepareBattleField();
     }
 
     private void prepareBattleField() {
@@ -64,8 +56,28 @@ public class Field {
         }
     }
 
+    public void printBattleField() {
+        for (String[] strings : battleField) {
+            for (int j = 0; j < strings.length; j++) {
+                System.out.print(strings[j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void printBattleField(String[][] battleField) {
+
+        for (String[] strings : battleField) {
+            for (int j = 0; j < strings.length; j++) {
+                System.out.print(strings[j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.print("---------------------\n");
+    }
+
     protected String[][] prepareBattleFieldWithTheFogOfWar(Player player) {
-        String [][] battleField = new String[11][11];
+        String[][] battleField = new String[11][11];
         battleField[0][0] = " ";
         battleField[0][1] = "1";
         battleField[0][2] = "2";
@@ -113,28 +125,6 @@ public class Field {
         return battleField;
     }
 
-    public void printBattleField() {
-        System.out.println();
-        for (String[] strings : battleField) {
-            for (int j = 0; j < strings.length; j++) {
-                System.out.print(strings[j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    public void printBattleField(String[][] battleField) {
-        System.out.println();
-        for (String[] strings : battleField) {
-            for (int j = 0; j < strings.length; j++) {
-                System.out.print(strings[j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
     public String[][] getBattleField() {
         return battleField;
     }
@@ -143,7 +133,7 @@ public class Field {
         this.battleField = battleField;
     }
 
-    public Ship placeShipOnMap(Ship ship) throws ShipCoordinatesOutTheBoardException, IncorrectShipSizeException, WrongShipLocationException {
+    public Ship placeShipOnMap(Ship ship, Field plField) throws ShipCoordinatesOutTheBoardException, IncorrectShipSizeException, WrongShipLocationException {
         //can potentially break multithreaded code;
 
         int enclosedFieldCounter = 1;
@@ -152,7 +142,7 @@ public class Field {
         Map<Integer, EnclosedField> enclosedFields = ship.getEnclosedFields();
         Map<Integer, CoordinateUnit> coordinates = ship.getCoordinates();
 
-        String[][] field = Field.getInstance().getBattleField();
+        String[][] field = plField.getBattleField();
 
         boolean continueProcessing = true;
 
@@ -380,7 +370,7 @@ public class Field {
                     }
                 }
             }
-            Field.getInstance().setBattleField(field);
+            plField.setBattleField(field);
         }
         ship.setEnclosedFields(enclosedFields);
         ship.setCoordinates(coordinates);

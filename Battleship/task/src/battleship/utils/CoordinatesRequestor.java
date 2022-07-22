@@ -3,6 +3,7 @@ package battleship.utils;
 import battleship.exceptions.ShotOutTheBoardException;
 import battleship.vessels.Ship;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -84,7 +85,6 @@ public class CoordinatesRequestor {
         return charList;
     }
 
-    //
     public static List<Integer> findNumbers(String stringToSearch) {
         Pattern integerPattern = Pattern.compile("\\d+");
         Matcher matcher = integerPattern.matcher(stringToSearch);
@@ -94,5 +94,16 @@ public class CoordinatesRequestor {
             integerList.add(Integer.parseInt(matcher.group()));
         }
         return integerList;
+    }
+
+    public static void passMove() {
+        System.out.println("Press Enter and pass the move to another player\n...");
+        while (true) {
+            try {
+                if ('\n' == (char) System.in.read()) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

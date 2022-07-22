@@ -1,28 +1,31 @@
 package battleship.player;
 
-import battleship.Field;
 import battleship.utils.CoordinatesRequestor;
-import battleship.utils.NavigationUtils;
 import battleship.vessels.Coordinate;
 import battleship.vessels.CoordinateUnit;
 import battleship.vessels.Ship;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Player {
 
+    static int instanceCounter = 0;
+
     private String name;
+    private int playerNumber;
     private Map<Integer, Shot> shots;
     private Map<String, Integer> record;
     private Fleet playerFleet;
 
     public Player(String name) {
+        instanceCounter++;
+
         this.name = name;
         this.shots = new HashMap<>();
         this.record = new HashMap<>();
         this.playerFleet = new Fleet();
+        this.playerNumber = instanceCounter;
     }
 
     public Shot produceShot() {
@@ -74,6 +77,10 @@ public class Player {
 
     public void setPlayerFleet(Fleet fleet) {
         this.playerFleet = fleet;
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 
     public class Fleet {

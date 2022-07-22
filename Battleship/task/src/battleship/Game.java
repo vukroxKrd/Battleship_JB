@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static battleship.utils.CoordinatesRequestor.passMove;
+
 public class Game {
 
     private Player playerOne;
@@ -33,7 +35,7 @@ public class Game {
 
     public void play(Field field, Player playerOne, Player playerTwo) {
         var player = placeAllShipsOnTheMap(playerOne, field);
-        var opponent = player;
+        var opponent = placeAllShipsOnTheMap(playerTwo, field);
 
         System.out.println("The game starts!");
         do {
@@ -43,6 +45,8 @@ public class Game {
     }
 
     public Player placeAllShipsOnTheMap(Player player, Field field) {
+
+        System.out.println("Player " + player.getPlayerNumber() + ", place your ships on the game field");
 
         var fleet = player.getPlayerFleet();
 
@@ -97,6 +101,8 @@ public class Game {
             player.setPlayerFleet(fleet);
             field.printBattleField();
         }
+
+        passMove();
         return player;
     }
 

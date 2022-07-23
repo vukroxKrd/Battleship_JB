@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Carcass for all ships in the game
+ * */
 public abstract class Ship {
 
     private String name;

@@ -25,6 +25,7 @@ public class Field {
         prepareBattleField();
     }
 
+    //Initial battlefield setup
     private void prepareBattleField() {
         this.battleField = new String[11][11];
         battleField[0][0] = " ";
@@ -125,17 +126,11 @@ public class Field {
         return battleField;
     }
 
-    public String[][] getBattleField() {
-        return battleField;
-    }
-
-    public void setBattleField(String[][] battleField) {
-        this.battleField = battleField;
-    }
-
+    //A pretty ugly method with a lof of if-else branching. The only way I could think of at the moment of creating it hot to
+    //map ships on the map and get all enclosed fields.
     public Ship placeShipOnMap(Ship ship, Field plField) throws ShipCoordinatesOutTheBoardException, IncorrectShipSizeException, WrongShipLocationException {
-        //can potentially break multithreaded code;
 
+        //can potentially break multithreaded code;
         int enclosedFieldCounter = 1;
         int coordinatesCounter = 1;
 
@@ -157,42 +152,30 @@ public class Field {
                     }
 
                     if (ship.getSize() == 0) {
-//                        ship.setAfloat(false);
                         continueProcessing = false;
                     }
                     // the ship is not touching borders
-//                    if (i > 1 && j > 1 && i < field.length - 1 && j < field.length - 1) {
                     if (i == ship.getRearLetter() && j >= ship.getRearNumber() && j <= ship.getForeNumber() && ship.getRearLetter() != 1 && ship.getRearLetter() != 10) {
                         if (j == ship.getRearNumber() && ship.getRearNumber() > 1) {
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j - 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j - 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j - 1)));
-
-//                            field[i][j - 1] = ".";
-//                            field[i - 1][j - 1] = ".";
-//                            field[i + 1][j - 1] = ".";
                         }
                         if (j == ship.getForeNumber() && ship.getForeNumber() < 10 && ship.getForeLetter() < 10) {
 
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j + 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j + 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j + 1)));
-
-//                            field[i][j + 1] = ".";
-//                            field[i - 1][j + 1] = ".";
-//                            field[i + 1][j + 1] = ".";
                         }
                         coordinates.put(coordinatesCounter++, new CoordinateUnit(numberLetterMap.get(i), j));
                         enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                         enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
 
                         field[i][j] = String.valueOf('O');
-//                        field[i + 1][j] = ".";
-//                        field[i - 1][j] = ".";
                         ship.setSize(ship.getSize() - 1);
 
-                        //the ship is touching borders
-                        //placed on A field
+                    //the ship is touching borders
+                    //placed on A field
                     } else if (ship.getRearLetter() == 1 && i == ship.getRearLetter()) {
                         if (j >= ship.getRearNumber() && j <= ship.getForeNumber()) {
 
@@ -200,52 +183,37 @@ public class Field {
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
 
                             field[i][j] = String.valueOf('O');
-//                            field[i + 1][j] = ".";
                             ship.setSize(ship.getSize() - 1);
-
                             if (j == ship.getRearNumber() && ship.getRearNumber() != 1) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j - 1)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j - 1)));
-
-//                                field[i][j - 1] = ".";
-//                                field[i + 1][j - 1] = ".";
                             }
                             if (j == ship.getForeNumber() && ship.getForeNumber() != 10) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j + 1)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j + 1)));
-
-//                                field[i][j + 1] = ".";
-//                                field[i + 1][j + 1] = ".";
                             }
                         }
-                        //placed on J field
+                    //placed on J field
                     } else if (ship.getRearLetter() == 10 && i == ship.getRearLetter()) {
                         if (j >= ship.getRearNumber() && j <= ship.getForeNumber()) {
                             coordinates.put(coordinatesCounter++, new CoordinateUnit(numberLetterMap.get(i), j));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
 
                             field[i][j] = String.valueOf('O');
-//                            field[i - 1][j] = ".";
                             ship.setSize(ship.getSize() - 1);
                         }
                         if (j == ship.getRearNumber() && ship.getRearNumber() != 1) {
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j - 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j - 1)));
-
-//                            field[i][j - 1] = ".";
-//                            field[i - 1][j - 1] = ".";
                         }
                         if (j == ship.getForeNumber() && ship.getForeNumber() != 10) {
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j + 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j + 1)));
-
-//                            field[i][j + 1] = ".";
-//                            field[i - 1][j + 1] = ".";
                         }
                     }
                 }
             }
-            //For vertically placed ships [meaning Letters are not equal]
+        //For vertically placed ships [meaning Letters are not equal]
         } else {
             for (int i = 1; i < field.length && continueProcessing; i++) {
                 for (int j = 1; j < field[i].length; j++) {
@@ -254,7 +222,6 @@ public class Field {
                         continue;
                     }
                     if (ship.getSize() == 0) {
-//                        ship.setAfloat(false);
                         continueProcessing = false;
                     }
                     if (i >= 1 && j > 1 && j < field.length) {
@@ -263,27 +230,17 @@ public class Field {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j - 1)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j + 1)));
-
-//                                field[i - 1][j] = ".";
-//                                field[i - 1][j - 1] = ".";
-//                                field[i - 1][j + 1] = ".";
                             }
                             if (i == ship.getForeLetter() && ship.getForeLetter() < 10) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j - 1)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j + 1)));
-
-//                                field[i + 1][j] = ".";
-//                                field[i + 1][j - 1] = ".";
-//                                field[i + 1][j + 1] = ".";
                             }
                             coordinates.put(coordinatesCounter++, new CoordinateUnit(numberLetterMap.get(i), j));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j + 1)));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j - 1)));
 
                             field[i][j] = String.valueOf('O');
-//                            field[i][j + 1] = ".";
-//                            field[i][j - 1] = ".";
                             ship.setSize(ship.getSize() - 1);
                         }
                         if (i > ship.getForeLetter()) {
@@ -299,72 +256,47 @@ public class Field {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j + 1)));
 
-//                                field[i + 1][j] = ".";
-//                                field[i + 1][j + 1] = ".";
                             }
                             if (ship.getForeLetter() == 10 && i == ship.getRearLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j + 1)));
-
-//                                field[i - 1][j] = ".";
-//                                field[i - 1][j + 1] = ".";
                             }
                             if (ship.getRearLetter() != 1 && ship.getForeLetter() != 10 && i == ship.getRearLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j + 1)));
-
-//                                field[i - 1][j] = ".";
-//                                field[i - 1][j + 1] = ".";
                             } else if (ship.getRearLetter() != 1 && ship.getForeLetter() != 10 && i == ship.getForeLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j + 1)));
-
-//                                field[i + 1][j] = ".";
-//                                field[i + 1][j + 1] = ".";
                             }
                             coordinates.put(coordinatesCounter++, new CoordinateUnit(numberLetterMap.get(i), j));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j + 1)));
 
                             field[i][j] = String.valueOf('O');
-//                            field[i][j + 1] = ".";
                             ship.setSize(ship.getSize() - 1);
                         }
-                        //placed on 10 column
+                    //placed on 10 column
                     } else if (ship.getRearNumber() == 10 && j == ship.getRearNumber()) {
                         if (i >= ship.getRearLetter() && i <= ship.getForeLetter()) {
                             if (ship.getRearLetter() == 1 && i == ship.getForeLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j - 1)));
-
-//                                field[i + 1][j] = ".";
-//                                field[i + 1][j - 1] = ".";
                             }
                             if (ship.getForeLetter() == 10 && i == ship.getRearLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j - 1)));
-
-//                                field[i - 1][j] = ".";
-//                                field[i - 1][j - 1] = ".";
                             }
                             if (ship.getRearLetter() != 1 && ship.getForeLetter() != 10 && i == ship.getRearLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i - 1), (j - 1)));
-
-//                                field[i - 1][j] = ".";
-//                                field[i - 1][j - 1] = ".";
                             } else if (ship.getRearLetter() != 1 && ship.getForeLetter() != 10 && i == ship.getForeLetter()) {
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j)));
                                 enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i + 1), (j - 1)));
-
-//                                field[i + 1][j] = ".";
-//                                field[i + 1][j - 1] = ".";
                             }
 
                             coordinates.put(coordinatesCounter++, new CoordinateUnit(numberLetterMap.get(i), j));
                             enclosedFields.put(enclosedFieldCounter++, new EnclosedField(numberLetterMap.get(i), (j - 1)));
 
                             field[i][j] = String.valueOf('O');
-//                            field[i][j - 1] = ".";
                             ship.setSize(ship.getSize() - 1);
                         }
                     }
@@ -377,6 +309,7 @@ public class Field {
         return ship;
     }
 
+    //a helper method necessary to validate ship position and size
     private boolean validateShipPosition(Ship ship) throws IncorrectShipSizeException, WrongShipLocationException, ShipCoordinatesOutTheBoardException {
 
         if (ship.getRearLetter() >= LOWER_BOUNDARY &&
@@ -410,5 +343,13 @@ public class Field {
             throw new WrongShipLocationException("\nError! Wrong ship location! Try again: \n");
         }
         return true;
+    }
+
+    public String[][] getBattleField() {
+        return battleField;
+    }
+
+    public void setBattleField(String[][] battleField) {
+        this.battleField = battleField;
     }
 }

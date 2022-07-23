@@ -34,7 +34,7 @@ public class Game {
     public void play(Player playerOne, Player playerTwo) {
         var player = placeAllShipsOnTheMap(playerOne, playerOne.getField());
         var opponent = placeAllShipsOnTheMap(playerTwo, playerTwo.getField());
-//        System.out.println("The game starts!");
+
         do {
             takeActionOnOpponent(player, opponent);
             takeActionOnOpponent(opponent, player);
@@ -42,6 +42,11 @@ public class Game {
         System.out.println("You sank the last ship. You won. Congratulations!");
     }
 
+    //Step 1 of the game.
+    // Players have to place ships on the map. 2-dimensional array is heavily used. While doing so 2 collections are created and filed:
+    //1.Coordinates,
+    //2.Enclosed fields.
+    //This data is used later to facilitate the game process.
     public Player placeAllShipsOnTheMap(Player player, Field field) {
 
         System.out.println("Player " + player.getPlayerNumber() + ", place your ships on the game field" + System.lineSeparator());
@@ -104,6 +109,7 @@ public class Game {
         return player;
     }
 
+    //This method is determining when it is the time to stop playing.
     public boolean continuePlaying(Player player, Player opponent) {
         boolean someShipAfloat = true;
 
@@ -117,12 +123,13 @@ public class Game {
         return someShipAfloat;
     }
 
+    // Step 2 main method. This is where the shooting takes place. Every player has 2 fields.
+    // The player cannot see the field of his opponent due to the fog of war,
+    // but he can keep track of the shots made by himself and by his opponent.
     public void takeActionOnOpponent(Player player, Player opponent) {
 
         opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
         player.getField().printBattleField();
-//            System.out.println("\nTake a shot!");
-
 
         Shot shot = player.produceShot();
         Map<Integer, Shot> allShots = player.getShots();
@@ -143,6 +150,9 @@ public class Game {
                 })
                 .findAny();
 
+        //This block of code is executed when the player hits a ship.
+        // It marks shots and coordinates as 'hit' but also flags ships as destroyed
+        //when they are not afloat.
         anyCoordinate.ifPresentOrElse(
                 (coordinate) -> {
                     coordinate.setHit(true);
@@ -155,9 +165,7 @@ public class Game {
 
                     opponent.getField().setBattleField(bField);
 
-//                    opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
-//                    player.getField().printBattleField();
-
+                    //checking the ship is afloat below. if not setting a boolean flag to know when there are no ships afloat to stop playing.
                     AtomicBoolean afloat = new AtomicBoolean(true);
                     fleetOfOpponent
                             .findShipByCoordinate(coordinate)
@@ -177,12 +185,10 @@ public class Game {
                         passMove();
                     }
                 },
+                //This block of code is executed when the player didn't hit any ships.
                 () -> {
                     bField[NavigationUtils.letterNumberMap.get(shot.getLetter())][shot.getNumber()] = String.valueOf('M');
                     opponent.getField().setBattleField(bField);
-
-//                    opponent.getField().printBattleField(opponent.getField().prepareBattleFieldWithTheFogOfWar(player));
-//                    player.getField().printBattleField();
                     System.out.print("You missed!");
                     passMove();
                 }

@@ -17,6 +17,7 @@ public class CoordinatesRequestor {
 
     private final static Scanner scanner = new Scanner(System.in);
 
+    //This is used to request user input for coordinates.
     public static List<Integer> requestCoordinates(Ship ship, boolean repeat) {
         if (repeat) {
             System.out.print("> ");
@@ -25,7 +26,7 @@ public class CoordinatesRequestor {
             System.out.print("\n> ");
         }
 
-        String userInput = scanner.nextLine();
+        String userInput = validateInput("[a-j|A-J][\\d]{1,2}\\s[a-j|A-J][\\d]{1,2}");
 
         System.out.print("\n");
         List<Integer> numbers = findNumbers(userInput);
@@ -55,10 +56,10 @@ public class CoordinatesRequestor {
         return result;
     }
 
+    //This is used to request shots when ships are placed on the map
     public static String requestUserInput() {
         System.out.print("\n>");
-        String result = null;
-        result = scanner.nextLine();
+        String result = validateInput("^[[a-j|A-J][\\d]{1,2}]{2,3}\\b");
         System.out.print("\n");
 
         try {
@@ -73,6 +74,30 @@ public class CoordinatesRequestor {
             result = requestUserInput();
         }
         return result;
+    }
+
+    //Added a very useful method to validate input. As when played very difficult to control spelling for children.
+    //Only the slightest mistake leads towards abrupt end of the game.
+    private static String validateInput(String pattern) {
+        boolean aValidInput;
+        String userInput = "";
+
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = null;
+        do {
+            userInput = scanner.nextLine();
+            matcher = p.matcher(userInput);
+
+            if (matcher.find()) {
+                aValidInput = true;
+            } else {
+                aValidInput = false;
+                System.out.print("Input format should be: [Letter Number Space Letter Number] for a coordinate and [Letter Number] for a shot!");
+                System.out.print("E.g. Coordinate={<A1 A2>, or <e1 g1>} VS Shot= {<C1>, or <b2>}\n> ");
+            }
+        } while (!aValidInput);
+
+        return userInput;
     }
 
     private static List<Character> findLetters(String stringToSearch) {

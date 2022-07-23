@@ -2,6 +2,13 @@ package battleship.player;
 
 import battleship.vessels.Coordinate;
 
+
+/**
+ * This class represents coordinates which are produced by a player on the stage when the ships are being shot.
+ *
+ * "strike" field was included mainly for reference and statistics in case it would have been necessary to produce some kind of
+ * effectiveness statistics.
+ * */
 public class Shot extends Coordinate {
 
     private char letter;

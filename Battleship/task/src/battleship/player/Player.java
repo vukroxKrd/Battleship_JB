@@ -96,27 +96,12 @@ public class Player {
         this.field = field;
     }
 
+    //Inner class representing a wraper around collection of ships. Convenient to determine whether any ships are left or not.
     public class Fleet {
 
         private boolean shipsLeft = true;
 
         private List<Ship> ships = new ArrayList<>();
-
-        public List<Ship> getShips() {
-            return ships;
-        }
-
-        public void setShips(List<Ship> ships) {
-            this.ships = ships;
-        }
-
-        public boolean isShipsLeft() {
-            return shipsLeft;
-        }
-
-        public void setShipsLeft(boolean shipsLeft) {
-            this.shipsLeft = shipsLeft;
-        }
 
         public boolean areAnyShipsLeft() {
             boolean result = this.ships.stream().anyMatch(Ship::isAfloat);
@@ -142,6 +127,23 @@ public class Player {
                     .filter(CoordinateUnit::isHit)
                     .collect(Collectors.toList());
         }
+
+        public List<Ship> getShips() {
+            return ships;
+        }
+
+        public void setShips(List<Ship> ships) {
+            this.ships = ships;
+        }
+
+        public boolean isShipsLeft() {
+            return shipsLeft;
+        }
+
+        public void setShipsLeft(boolean shipsLeft) {
+            this.shipsLeft = shipsLeft;
+        }
+
     }
 }
 

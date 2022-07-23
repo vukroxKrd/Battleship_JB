@@ -3,6 +3,7 @@ package battleship.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+//Helper class to facilitate work with 2D array.
 public class NavigationUtils {
 
     public static Map<Character, Integer> letterNumberMap = new HashMap<>();
